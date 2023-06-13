@@ -1,0 +1,52 @@
+#%RAML 1.0
+title: e-Commerce Optim Firebase
+
+types:
+  infosType: !include datatypes/Infos.raml
+
+traits:
+  client-id-required:
+    headers:
+      client_id:
+        type: string
+      client_secret:
+        type: string
+    responses:
+      401:
+        description: Unauthorized, The client_id or client_secret are not valid or the client does not have access.
+      202:
+        description:  Accepted, The client_id and client_secret are valid, the client authorized.
+
+/infosProducts:
+    get: 
+      is: [client-id-required]
+      description: Récupérer les infos de tous les produits
+      responses:
+        200:
+          body:
+            application/json:
+              type: infosType[]
+              examples:
+                output: !include examples/Infos.raml
+        404:
+          body:
+            application/json:
+              example:
+                message: Aucune info n'est disponible
+
+/infosProducts/{id}:
+    get: 
+      is: [client-id-required]
+      description: Récupérer les infos de tous les produits en fonction de l'ID
+      responses:
+        200:
+          body:
+            application/json:
+              type: infosType[]
+              examples:
+                output: !include examples/Infos.raml
+        404:
+          body:
+            application/json:
+              example:
+                message: Aucune info n'est disponible pour ce produit
