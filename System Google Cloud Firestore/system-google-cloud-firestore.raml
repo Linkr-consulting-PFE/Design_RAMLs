@@ -1,0 +1,89 @@
+#%RAML 1.0
+title: System Google Cloud Firestore
+
+
+types:
+  Product: !include Project_Types/product.raml
+
+  IdList:
+    type: string
+    pattern: ^(\d+,?)+\d*$
+
+  paginationParam:
+    properties:
+      page:
+        type: integer
+        minimum: 1
+        default: 1    
+        description: The page number to retrieve.
+      perPage:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+        description: The number of items to return per page.
+
+traits:
+  client-id-required:
+    headers:
+      client_id:
+        type: string
+      client_secret:
+        type: string
+    responses:
+      401:
+        description: Unauthorized, The client_id or client_secret are not valid or the client does not have access.
+      202:
+        description:  Accepted, The client_id and client_secret are valid, the client authorized.
+
+/products:
+  get:
+        description: Retrieve a list of product information based on the provided IDs sent as query parameters.
+        is:
+          - client-id-required
+
+        queryParameters:
+          idProduct:
+            type: IdList
+            description: Comma-separated list of IDs.
+            required: true
+          page:
+            type: integer
+            minimum: 1
+            default: 1
+            description: The page number to retrieve.
+            required: false
+          perPage:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+            description: The number of items to return per page.
+            required: false
+
+        responses:
+          200:
+            body:
+              application/json:
+                type: Product[]
+                examples:
+                  output : !include Project_TypesExemples/products.json
+          404:
+            description: Your list of IDs has invalid or non-existent IDs.
+            
+
+  /{id}:
+    get:
+      is: [client-id-required]
+      description: Get product informations by ID
+      responses:
+        200:
+         body:
+            application/json:
+             type: Product
+             examples:
+                output: !include Project_TypesExemples/product.json
+        404:
+          description: Invalid ID , there is no record that match with this id.
+
+

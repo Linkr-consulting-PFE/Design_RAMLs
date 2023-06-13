@@ -1,0 +1,35 @@
+#%RAML 1.0
+title: e-Commerce Optim Process
+
+types:
+  productType: !include datatypes/Products.raml
+
+traits:
+  client-id-required:
+    headers:
+      client_id:
+        type: string
+      client_secret:
+        type: string
+    responses:
+      401:
+        description: Unauthorized, The client_id or client_secret are not valid or the client does not have access.
+      202:
+        description:  Accepted, The client_id and client_secret are valid, the client authorized.
+
+/productsStockAndInfos/{id}:
+   is: [client-id-required]
+   get: 
+      description: Récupérer les infos et le stock en fonction de l'ID du produit
+      responses:
+        200:
+          body:
+            application/json:
+              type: productType[]
+              examples:
+                output: !include examples/Product.raml
+        404:
+          body:
+            application/json:
+              example:
+                message: Aucun produit n'existe

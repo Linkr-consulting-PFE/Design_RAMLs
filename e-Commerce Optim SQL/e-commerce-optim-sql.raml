@@ -1,0 +1,52 @@
+#%RAML 1.0
+title: e-Commerce Optim SQL
+
+types:
+  stockType: !include datatypes/Stock.raml
+
+traits:
+  client-id-required:
+    headers:
+      client_id:
+        type: string
+      client_secret:
+        type: string
+    responses:
+      401:
+        description: Unauthorized, The client_id or client_secret are not valid or the client does not have access.
+      202:
+        description:  Accepted, The client_id and client_secret are valid, the client authorized.
+  
+/products:
+    get: 
+      is: [client-id-required] 
+      description: Récupérer le stock de tous les produits
+      responses:
+        200:
+          body:
+            application/json:
+              type: stockType[]
+              examples:
+                output: !include examples/Stock.raml
+        404:
+          body:
+            application/json:
+              example:
+                message: Aucun stock n'est disponible
+
+/products/{id}:
+    get: 
+      is: [client-id-required]
+      description: Récupérer le stock du produit par l'ID
+      responses:
+        200:
+          body:
+            application/json:
+              type: stockType[]
+              examples:
+                output: !include examples/Stock.raml
+        404:
+          body:
+            application/json:
+              example:
+                message: Le stock du produit n'existe pas

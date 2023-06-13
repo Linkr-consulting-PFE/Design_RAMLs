@@ -1,0 +1,15 @@
+#%RAML 1.0 DataType
+
+    type: object
+    properties:
+      page:
+        type: integer
+        minimum: 1
+        default: 1
+        description: The page number to retrieve.
+      perPage:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+        description: The number of items to return per page.

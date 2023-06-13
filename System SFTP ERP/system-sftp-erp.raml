@@ -1,0 +1,34 @@
+#%RAML 1.0
+title: System SFTP ERP
+
+
+types:
+  Article: !include Project_Types/articleType.raml
+
+traits:
+  client-id-required:
+    headers:
+      client_id:
+        type: string
+      client_secret:
+        type: string
+    queryParameters:
+      forceAddParams:
+        required: false
+    responses:
+      401:
+        description: Unauthorized, The client_id or client_secret are not valid or the client does not have access.
+
+/SFTP:
+  post:
+    is: [client-id-required]
+    description: Add Articles    
+        
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              message : path
+
+
